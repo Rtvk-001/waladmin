@@ -1,0 +1,41 @@
+/* ManageEvents.css */
+.manage-events {
+    padding: 20px;
+  }
+  
+  .action-buttons {
+    margin-bottom: 20px;
+  }
+  
+  .action-buttons button {
+    margin-right: 10px;
+  }
+  
+  .add-event-form {
+    margin-bottom: 20px;
+  }
+  
+  .add-event-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .add-event-form input {
+    margin-right: 10px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .error {
+    color: red;
+  }
+  

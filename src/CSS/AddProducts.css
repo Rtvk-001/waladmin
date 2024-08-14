@@ -1,0 +1,52 @@
+.add-products {
+    padding: 20px;
+  }
+  
+  .tabs {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .tab.active {
+    background-color: #e0e0e0;
+  }
+  
+  .manual-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .manual-form label {
+    margin-bottom: 10px;
+  }
+  
+  .manual-form input {
+    padding: 8px;
+    margin-right: 10px;
+  }
+  
+  .manual-form button {
+    padding: 10px;
+  }
+  
+  .barcode-scanner {
+    margin-top: 20px;
+  }
+  
+  .product-details {
+    margin-top: 20px;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+  
