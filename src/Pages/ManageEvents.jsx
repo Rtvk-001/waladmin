@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import supabase from '../createClient.js';
 import { useNavigate } from 'react-router-dom';
-//import '../CSS/ManageEvents.css'
+import '../CSS/ManageEvents.css'
 
 //******************************************************* */
 // cannot update events

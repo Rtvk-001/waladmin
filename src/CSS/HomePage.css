@@ -1,0 +1,58 @@
+.homepage {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+    padding-top: 20px;
+    position: relative;
+    width: 100%; /* Makes the homepage div take up the full width of the viewport */
+}
+  
+  .title {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .add-product-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 5px 15px; /* Smaller padding for a smaller button */
+    font-size: 0.9rem; /* Slightly smaller font size */
+    cursor: pointer;
+    border-radius: 3px; /* Small border-radius for a rectangular shape */
+    position: absolute;
+    top: 200px;
+    left: 1375px; 
+    white-space: nowrap; 
+  }
+  
+  .add-product-btn:hover {
+    background-color: darkgreen;
+  }
+  .event-tile {
+    background-color: #060606;
+    padding: 20px;
+    margin-top: 30px;
+    position: absolute;
+    top: 300px; /* Adjust the top position as needed */
+    left: 10px; /* 10px left of the original position */
+    width: 200px; /* Set a fixed width */
+    height: 150px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+}
+  
+  .event-name {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 50px;
+    margin-bottom: 10px;
+  }
+  
+  .event-date {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  

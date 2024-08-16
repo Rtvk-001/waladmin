@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { BarcodeScanner } from 'react-barcode-scanner'; // Example package for barcode scanning
 import supabase from '../createClient.js';
 import axios from 'axios'; // For API requests
-//import '../CSS/AddProducts.css'; // Optional: for custom styling
+import '../CSS/AddProducts.css'; // Optional: for custom styling
 
 
 //******************************************************* */
@@ -13,14 +13,11 @@ import axios from 'axios'; // For API requests
 // make sure all form data is filled before submitting, if not, enable a red outline that is not filled that shakes (animation)
 //if permission denied (in console) show alert
 //****************************************************** */
-
 const AddProducts = () => {
   const [activeTab, setActiveTab] = useState('manual');
   const [barcode, setBarcode] = useState('');
-  const [productName, setProductName] = useState('');
-  const [productPrice, setProductPrice] = useState('');
-  const [productDetails, setProductDetails] = useState({});
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     product_name: '',
     product_price: '',
@@ -46,7 +43,26 @@ const AddProducts = () => {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setError('');
-    setProductDetails({});
+    setFormData({
+      product_name: '',
+      product_price: '',
+      energy_kcal: '',
+      fat_g: '',
+      saturated_fat_g: '',
+      trans_fat_g: '',
+      cholesterol_mg: '',
+      sodium_mg: '',
+      carbohydrates_g: '',
+      fiber_g: '',
+      sugars_g: '',
+      proteins_g: '',
+      salt_g: '',
+      vitamin_c_mg: '',
+      calcium_mg: '',
+      iron_mg: '',
+      potassium_mg: '',
+      nutrition_score_fr: ''
+    });
   };
 
   // Handle barcode scan
@@ -56,9 +72,6 @@ const AddProducts = () => {
       const response = await axios.get(`https://world.openfoodfacts.org/api/v0/product/${scannedBarcode}.json`);
       const product = response.data.product;
       if (product) {
-        setProductName(product.product_name || 'N/A');
-        setProductPrice(product.price || 'N/A');
-        setProductDetails(product.nutriments || {});
         setFormData({
           ...formData,
           product_name: product.product_name || '',
@@ -88,9 +101,24 @@ const AddProducts = () => {
     }
   };
 
-  // Handle manual entry
+  // Handle manual submission
   const handleManualSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
+    
+    // Check for empty required fields
+    const hasEmptyFields = Object.values(formData).some(value => value === '');
+    if (hasEmptyFields) {
+      setError('Please fill in all required fields.');
+      setLoading(false);
+      // Add shake effect for invalid fields
+      document.querySelectorAll('input:invalid').forEach(input => {
+        input.classList.add('shake');
+        setTimeout(() => input.classList.remove('shake'), 500);
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('products')
@@ -119,7 +147,8 @@ const AddProducts = () => {
 
       if (error) throw error;
 
-      alert('Product added successfully!');
+      // Temporarily change the submit button
+      setLoading(false);
       setFormData({
         product_name: '',
         product_price: '',
@@ -141,6 +170,7 @@ const AddProducts = () => {
         nutrition_score_fr: ''
       });
     } catch (error) {
+      setLoading(false);
       setError('Error adding product.');
     }
   };
@@ -330,7 +360,7 @@ const AddProducts = () => {
             />
           </label>
           <label>
-            Nutrition Score:
+            Nutrition Score (FR):
             <input
               type="number"
               name="nutrition_score_fr"
@@ -338,20 +368,31 @@ const AddProducts = () => {
               onChange={handleInputChange}
             />
           </label>
-          <button type="submit">Add Product</button>
+          {error && <p className="error-message">{error}</p>}
+          <button type="submit" className={`submit-btn ${loading ? 'loading' : ''}`}>
+            {loading ? <div className="loading-icon" /> : 'Submit'}
+          </button>
         </form>
       )}
 
       {activeTab === 'scan' && (
-        <div className="barcode-scanner">
-          <BarcodeScanner
-            onScan={handleBarcodeScan}
-            onError={(error) => setError(error.message)}
-          />
+        <div className="scan-barcode">
+          <label>
+            Barcode:
+            <input
+              type="text"
+              value={barcode}
+              onChange={(e) => handleBarcodeScan(e.target.value)}
+            />
+          </label>
+          <button
+            onClick={() => handleBarcodeScan(barcode)}
+            className="submit-btn"
+          >
+            Scan
+          </button>
         </div>
       )}
-
-      {error && <p className="error">{error}</p>}
     </div>
   );
 };

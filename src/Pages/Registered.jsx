@@ -16,15 +16,43 @@ const Registered = () => {
 
   useEffect(() => {
     const fetchRegistrations = async () => {
-      const { data: registrationsData, error: registrationsError } = await supabase
-        .from('registered')
-        .select('*, users (username)')
-        .eq('event_id', event_id);
+      try {
+        // Fetch registrations for the given event_id
+        const { data: registrationsData, error: registrationsError } = await supabase
+          .from('registered')
+          .select('user_id, status') // Fetch user_id and status
+          .eq('event_id', event_id);
 
-      if (registrationsError) {
-        setError('Error fetching registrations.');
-      } else {
-        setRegistrations(registrationsData || []);
+        if (registrationsError) throw registrationsError;
+
+        if (registrationsData.length > 0) {
+          // Extract user_ids from the registrations data
+          const user_ids = registrationsData.map(r => r.user_id);
+
+          // Fetch user details for all the user_ids
+          const { data: usersData, error: usersError } = await supabase
+            .from('users')
+            .select('user_id, name')
+            .in('user_id', user_ids);
+
+          if (usersError) throw usersError;
+
+          // Create a map for quick lookup of usernames by user_id
+          const usersMap = new Map(usersData.map(user => [user.user_id, user.username]));
+
+          // Combine the registrations with the usernames
+          const enrichedRegistrations = registrationsData.map(registration => ({
+            ...registration,
+            username: usersMap.get(registration.user_id) || 'Unknown'
+          }));
+
+          setRegistrations(enrichedRegistrations);
+        } else {
+          setRegistrations([]);
+        }
+      } catch (err) {
+        //setError('Error fetching registrations.');
+        console.error(err);
       }
     };
 
@@ -47,9 +75,9 @@ const Registered = () => {
         </thead>
         <tbody>
           {registrations.map((registration) => (
-            <tr key={registration.uuid}>
-              <td>{registration.uuid}</td>
-              <td>{registration.users?.username || 'Unknown'}</td>
+            <tr key={registration.user_id}>
+              <td>{registration.user_id}</td>
+              <td>{registration.username}</td>
               <td>{registration.status}</td>
             </tr>
           ))}
